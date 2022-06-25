@@ -16,7 +16,7 @@ class UserRepositoryTest extends TestCase
     {
         $this->repository = new UserRepository(new User());
 
-        self::setUp();
+        parent::setUp();
     }
 
     public function test_find_all_empty()
