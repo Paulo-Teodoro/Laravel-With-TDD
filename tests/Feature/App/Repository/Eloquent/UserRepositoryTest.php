@@ -8,6 +8,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Repository\Eloquent\UserRepository;
 use App\Repository\Contracts\UserRepositoryInterface;
+use Illuminate\Database\QueryException;
 
 class UserRepositoryTest extends TestCase
 {
@@ -40,5 +41,30 @@ class UserRepositoryTest extends TestCase
         $response = $this->repository->findAll();
 
         $this->assertCount(10, $response);
+    }
+
+    public function test_store()
+    {
+        $response = $this->repository->store([
+                        'name'  => 'Paulo Teodoro',
+                        'email' => 'pauloteodoroti@gmail.com', 
+                        'password' => bcrypt('password')
+                    ]);
+
+        $this->assertNotNull($response);
+        $this->assertIsObject($response);
+        $this->assertDatabaseHas('users', [
+            'email' => 'pauloteodoroti@gmail.com'
+        ]);
+    }
+
+    public function test_store_exception()
+    {
+        $this->expectException(QueryException::class);
+
+        $this->repository->store([
+            'name'  => 'Paulo Teodoro',
+            'password' => bcrypt('password')
+        ]);
     }
 }
