@@ -92,4 +92,20 @@ class UserRepositoryTest extends TestCase
             'name' => 'Paulo'
         ]);
     }
+
+    public function test_delete()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->repository->delete($user->email);
+
+        $this->assertTrue($response);
+    }
+
+    public function test_delete_exception()
+    {
+        $this->expectException(ModelNotFoundException::class);
+
+        $this->repository->delete('blah@blah.com');
+    }
 }
