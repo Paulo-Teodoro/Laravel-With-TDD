@@ -6,4 +6,5 @@ interface UserRepositoryInterface
 {
     public function findAll() :array;
     public function store(array $data) :object;
+    public function update(string $email, array $data) :object;
 }
