@@ -14,6 +14,11 @@ class UserRepository implements UserRepositoryInterface
         $this->model = $user;
     }
 
+    public function find(string $email) :?object
+    {
+        return $this->model->where('email', $email)->first();
+    }
+
     public function findAll() :array
     {
         return $this->model->get()->toArray();
