@@ -8,6 +8,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Repository\Eloquent\UserRepository;
 use App\Repository\Contracts\UserRepositoryInterface;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 
 class UserRepositoryTest extends TestCase
@@ -65,6 +66,30 @@ class UserRepositoryTest extends TestCase
         $this->repository->store([
             'name'  => 'Paulo Teodoro',
             'password' => bcrypt('password')
+        ]);
+    }
+
+    public function test_update()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->repository->update($user->email, [
+            'name' => 'Paulo'
+        ]);
+
+        $this->assertNotNull($response);
+        $this->assertIsObject($response);
+        $this->assertDatabaseHas('users', [
+            'name' => 'Paulo'
+        ]);
+    }
+
+    public function test_update_exception()
+    {
+        $this->expectException(ModelNotFoundException::class);
+
+        $this->repository->update('123', [
+            'name' => 'Paulo'
         ]);
     }
 }
