@@ -44,6 +44,22 @@ class UserRepositoryTest extends TestCase
         $this->assertCount(10, $response);
     }
 
+    public function test_find()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->repository->find($user->email);
+
+        $this->assertIsObject($response);
+    }
+
+    public function test_find_null()
+    {
+        $response = $this->repository->find('blah@blah.com');
+
+        $this->assertNull($response);
+    }
+
     public function test_store()
     {
         $response = $this->repository->store([
