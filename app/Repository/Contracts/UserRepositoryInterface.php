@@ -4,6 +4,7 @@ namespace App\Repository\Contracts;
 
 interface UserRepositoryInterface
 {
+    public function paginate();
     public function find(string $email) :?object;
     public function findAll() :array;
     public function store(array $data) :object;
