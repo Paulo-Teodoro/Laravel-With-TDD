@@ -3,7 +3,9 @@
 namespace App\Repository\Eloquent;
 
 use App\Models\User;
+use App\Repository\Contracts\PaginationInterface;
 use App\Repository\Contracts\UserRepositoryInterface;
+use App\Repository\Presenters\PaginationEloquentPresenter;
 
 class UserRepository implements UserRepositoryInterface
 {
@@ -24,9 +26,9 @@ class UserRepository implements UserRepositoryInterface
         return $this->model->get()->toArray();
     }
 
-    public function paginate()
+    public function paginate(int $page = 1) :PaginationInterface
     {
-        return $this->model->paginate();
+        return new PaginationEloquentPresenter($this->model->paginate());
     }
 
     public function store(array $data) :object
