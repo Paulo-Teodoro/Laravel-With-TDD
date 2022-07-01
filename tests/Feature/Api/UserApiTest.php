@@ -202,4 +202,20 @@ class UserApiTest extends TestCase
 
         $response->assertStatus(Response::HTTP_NOT_FOUND);
     }
+
+    public function test_delete()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->deleteJson("{$this->endpoint}/{$user->email}");
+
+        $response->assertStatus(Response::HTTP_NO_CONTENT);
+    }
+
+    public function test_delete_not_found()
+    {
+        $response = $this->deleteJson("{$this->endpoint}/blah@teste.com");
+
+        $response->assertStatus(Response::HTTP_NOT_FOUND);
+    }
 }
