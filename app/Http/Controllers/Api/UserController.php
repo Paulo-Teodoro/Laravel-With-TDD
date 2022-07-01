@@ -7,7 +7,6 @@ use App\Http\Requests\UserStoreRequest;
 use App\Http\Requests\UserUpdateRequest;
 use App\Http\Resources\UserResource;
 use App\Repository\Contracts\UserRepositoryInterface;
-use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
@@ -39,16 +38,6 @@ class UserController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  App\Http\Requests\UserStoreRequest  $request
@@ -68,17 +57,6 @@ class UserController extends Controller
     public function show($email)
     {
         return new UserResource($this->repository->find($email));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
     }
 
     /**
@@ -103,7 +81,7 @@ class UserController extends Controller
     public function destroy($email)
     {
         $this->repository->delete($email);
-        
+
         return response()->noContent();
     }
 }
