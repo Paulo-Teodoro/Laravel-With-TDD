@@ -130,4 +130,76 @@ class UserApiTest extends TestCase
             'data' => []
         ]);
     }
+
+    /**
+     * @dataProvider dataProviderUpdate
+     */
+    public function test_update(
+        array $payload,
+        int $statusCode,
+        array $responseStructure = []
+    )
+    {
+        $user = User::factory()->create();
+
+        $response = $this->putJson("{$this->endpoint}/{$user->email}", $payload);
+
+        $response->assertStatus($statusCode);
+        $response->assertJsonStructure($responseStructure);
+    }
+
+    public function dataProviderUpdate() :array
+    {
+        return [
+            'test update' => [
+                'payload' => [
+                    'name' => 'Paulo Teodoro',
+                    'password' => 'password'
+                ], 
+                'statusCode' => Response::HTTP_OK, 
+                'responseStructure' => [
+                    'data' => [
+                        'id',
+                        'name',
+                        'email'
+                    ]
+                ]
+            ],
+            'test update without name' => [
+                'payload' => [
+                    'password' => 'password'
+                ], 
+                'statusCode' => Response::HTTP_UNPROCESSABLE_ENTITY, 
+                'responseStructure' => [
+                    'errors' => [
+                        'name'
+                    ]
+                ]
+            ],
+            'test update short password' => [
+                'payload' => [
+                    'name' => 'Paulo',
+                    'password' => 'ph'
+                ], 
+                'statusCode' => Response::HTTP_UNPROCESSABLE_ENTITY, 
+                'responseStructure' => [
+                    'errors' => [
+                        'password'
+                    ]
+                ]
+            ],
+        ];
+    }
+
+    public function test_update_not_found()
+    {
+        $payload = [
+            'name' => 'Paulo Teodoro',
+            'password' => 'password'
+        ];
+
+        $response = $this->putJson("{$this->endpoint}/blah@teste.com", $payload);
+
+        $response->assertStatus(Response::HTTP_NOT_FOUND);
+    }
 }
