@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserStoreRequest;
+use App\Http\Requests\UserUpdateRequest;
 use App\Http\Resources\UserResource;
 use App\Repository\Contracts\UserRepositoryInterface;
 use Illuminate\Http\Request;
@@ -50,12 +51,12 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Http\Requests\UserStoreRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(UserStoreRequest $request)
     {
-        return new UserResource($this->repository->store($request->all()));
+        return new UserResource($this->repository->store($request->validated()));
     }
 
     /**
@@ -83,13 +84,14 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Http\Requests\UserUpdateRequest  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UserUpdateRequest $request, $email)
     {
-        //
+        $user = $this->repository->update($email, $request->validated());
+        return new UserResource($user);
     }
 
     /**
