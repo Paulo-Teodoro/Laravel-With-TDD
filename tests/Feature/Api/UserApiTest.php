@@ -55,4 +55,52 @@ class UserApiTest extends TestCase
             'test total 100 users page three' => ['total' => 100, 'page' => 3, 'totalPage' => 15]
         ];
     }
+
+    /**
+     * @dataProvider dataProviderCreate
+     */
+    public function test_create(
+        array $payload,
+        int $statusCode,
+        array $responseStructure = []
+    )
+    {
+        $response = $this->postJson($this->endpoint, $payload);
+
+        $response->assertStatus($statusCode);
+        $response->assertJsonStructure($responseStructure);
+    }
+
+    public function dataProviderCreate() :array
+    {
+        return [
+            'test create' => [
+                'payload' => [
+                    'name' => 'Paulo Teodoro',
+                    'email' => 'pauloteodoroti@gmail.com',
+                    'password' => '12345678'
+                ], 
+                'statusCode' => Response::HTTP_CREATED, 
+                'responseStructure' => [
+                    'data' => [
+                        'id',
+                        'name',
+                        'email'
+                    ]
+                ]
+            ],
+            'test create fail validation' => [
+                'payload' => [
+                    'email' => 'pauloteodoroti@gmail.com',
+                    'password' => '12345678'
+                ], 
+                'statusCode' => Response::HTTP_UNPROCESSABLE_ENTITY,
+                'responseStructure' => [
+                    'errors' => [
+                        'name'
+                    ]
+                ]
+            ]
+        ];
+    }
 }
