@@ -3,6 +3,7 @@
 namespace Tests\Feature\Api;
 
 use App\Models\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Response;
 use Tests\TestCase;
 
@@ -102,5 +103,31 @@ class UserApiTest extends TestCase
                 ]
             ]
         ];
+    }
+
+    public function test_find()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->getJson("{$this->endpoint}/{$user->email}");
+
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonStructure([
+            'data' => [
+                'id',
+                'name',
+                'email'
+            ]
+        ]);
+    }
+
+    public function test_find_fail()
+    {
+        $response = $this->getJson("{$this->endpoint}/teste@gmail.com");
+
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'data' => []
+        ]);
     }
 }
